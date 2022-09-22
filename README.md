@@ -1,2 +1,2 @@
 # weatherApp
-Using openweathermap APIs
+****************Using openweathermap APIs and display weatherdata************************
