@@ -1,0 +1,55 @@
+//jshint esversion:6
+
+const express = require("express");
+const https = require("https"); //add https module
+const bodyParser = require("body-parser");
+
+
+const app = express();
+app.use(bodyParser.urlencoded({extended:true}));
+
+app.get("/", function(req,res){
+res.sendFile(__dirname +"/index.html");
+});
+
+
+app.post("/", function(req,res){
+
+
+const query = req.body.cityName;
+const apikey = "f1d8640bc98bffbff92d42444e2a2c4f";
+const unit = "metric";
+
+const url = "https://api.openweathermap.org/data/2.5/weather?q=" + query + "&appid="+ apikey +"&units="+ unit ;
+
+
+https.get(url, function(response){
+console.log(response.statusCode); 
+
+response.on("data" , function(data){
+const weatherData = JSON.parse(data);
+// console.log(weatherData);   
+const temp = weatherData.main.temp
+const weatherDiscription = weatherData.weather[0].description
+res.write("<p><b>Weather is curently "+ weatherDiscription +"</b></p>" );
+res.write("<h1>The Temperature in london is " + temp + " degree celcius</h1>");
+const icon = weatherData.weather[0].icon
+const imageURL = "http://openweathermap.org/img/wn/" +icon + "@2x.png"
+res.write("<img src=" +imageURL+ ">");
+res.send();
+
+}) 
+
+
+
+})
+
+});
+
+
+
+
+
+app.listen(3000, function(){
+console.log("server is running port 3000.");
+});
